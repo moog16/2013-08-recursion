@@ -21,11 +21,12 @@ var stringifyJSON = function (obj) {
 	else if(Array.isArray(obj)) {
 		var result = [];
 		if(obj.length > 1) {
-			var workObj = [];
-			workObj.push(obj);
+			var workObj = obj.slice(0);
+			var len = obj.length - 1;
 			console.log(workObj);
+			result.push( stringifyJSON( workObj[0]) );
+
 			workObj.shift();
-			result.push( stringifyJSON(workObj[0]));
 
 		}
 		if(obj.length === 0) {
