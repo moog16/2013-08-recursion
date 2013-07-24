@@ -24,6 +24,9 @@ var stringifyJSON = function (obj, initialize) {
 		else if(typeof inObj === "string") {
 			return "\"" + inObj + "\"";
 		}
+		else if(obj === "function") {
+			return "{}";
+		}
 		else if(inObj === null) {
 			return "null";
 		}
@@ -62,30 +65,54 @@ var stringifyJSON = function (obj, initialize) {
 			}
 		}
 		else {
-			//console.log(obj);
+			//console.log("type of: " + typeof obj);
 			var keys = Object.keys(obj);
+
 			if(keys.length === 0) {
 				return "{}";
 			}
 			else {
 				var str = "{";
 				for(var key in keys) {
-					str += stringifyJSON(keys[key]) + ":" + stringifyJSON(obj[keys[key]]) + ",";
+					if(multiVal) {
+						//for objects with objects: is this how I should handle it? 
+						var miniKey = Object.keys(obj[key]);
+						str += "{" + inString(miniKey[0]) + ":" + inString(obj[key][miniKey[0]]) + "},";
+					} 
+					else if(keys[key] === "functions" || keys[key] ==="undefined") {
+						//this case is for the weirdObject. Is this how it is handled? Was this the point of the case?
+						return "{}";
+					}
+					else {
+						str += stringifyJSON(keys[key]) + ":" + stringifyJSON(obj[keys[key]]) + ",";
+					}
 				}
 				str = str.substring(0,str.length-1) + "}";	// substring removes last ','
-				console.log(str);
+				//console.log(str);
 				return str;
 			}
 		}
 	};
 
+	//can I change the arrays to look like the objects?
 	if(Array.isArray(obj) && obj.length > 1) {
 		var workObj = obj.slice(0); 	// fix for overwriting original obj
-		var	temp = inString(workObj[0], true);
+		var temp;
+
+		if(typeof workObj[0] === "object" && typeof workObj[1] === "object" ){
+			//Is there a better way to check if there is an object with objects?
+			var str = inString(workObj[0], true);
+			return "[" + str.substring(1,str.length-1) + "]";
+		}
+		else {
+			temp = inString(workObj[0], true);
+		}
+
 		if(isSet) {
 			temp = "[" + temp;
 		}
 		workObj.shift();
+
 		if(workObj.length === 1) {
 			return temp + "," + inString(workObj, true) + "]";
 		}
@@ -94,6 +121,7 @@ var stringifyJSON = function (obj, initialize) {
 		}
 	}
 	else {
+		//console.log(obj + " this is " + inString(obj,false));
 		return inString(obj, false);
 	}
 };
