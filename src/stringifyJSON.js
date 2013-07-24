@@ -2,7 +2,12 @@
 // var stringifyJSON = JSON.stringify;
 
 // but you don't so you're going to have to write it from scratch:
-var stringifyJSON = function (obj) {
+var stringifyJSON = function (obj, initialize) {
+	var isSet = false;
+	if(initialize === undefined) {
+		isSet = true;
+	}
+
 	var inString = function (inObj, multiVal) {
 		if(typeof inObj === "number") {
 			return inObj + "";	
@@ -35,19 +40,20 @@ var stringifyJSON = function (obj) {
 	if(Array.isArray(obj) && obj.length > 1) {
 
 		var workObj = obj.slice(0);
-		//console.log(workObj);
-		var temp;
-		temp = inString(workObj[0], true);
-		
+
+		var	temp = inString(workObj[0], true);
+		if(isSet) {
+			temp = "[" + temp;
+		} 
 
 		workObj.shift();
-		//console.log(workObj);
 
 		if(workObj.length === 1) {
+			console.log(inString(workObj,true));
 			return temp + "," + inString(workObj, true) + "]";
 		}
 		else {
-			return temp + "," + stringifyJSON(workObj);
+			return temp + "," + stringifyJSON(workObj, true);
 		}
 	}
 	else {

@@ -3,7 +3,11 @@
 //   return document.getElementsByClassName(className);
 // };
 
-// But in stead we're going to implement it from scratch:
+// But instead we're going to implement it from scratch:
 var getElementsByClassName = function (className) {
-  // your code here
+	var body = document.body.innerHTML;
+
+	console.log(document.body.className);
+	console.log("the body looks like: " + body);
+	//console.log(className);
 };
