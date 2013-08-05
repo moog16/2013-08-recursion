@@ -3,11 +3,29 @@
 //   return document.getElementsByClassName(className);
 // };
 
-// But instead we're going to implement it from scratch:
-var getElementsByClassName = function (className) {
-	var body = document.body.innerHTML;
+// But in stead we're going to implement it from scratch:
+var getElementsByClassName = function (className, nodes, results) {
+  results = results || [];
+  nodes = nodes || document.body;
+  
+  var hasClass = function(className, child){
+    var classList = child.classList;
+    for(var i = 0; i < classList.length; i++){
+      if(classList[i] === className){
+        return true;
+      }
+    }
+    return false;
+  };
 
-	console.log(document.body.className);
-	console.log("the body looks like: " + body);
-	//console.log(className);
+  var children = nodes.childNodes;
+  for(var i=0; i<children.length; i++) {
+
+    if(children[i].classList && hasClass(className, children[i])) {
+      results.push(children[i]);
+    }
+    getElementsByClassName(className, children[i], results);
+  }
+
+  return results;
 };
