@@ -20,7 +20,7 @@ var getElementsByClassName = function (className, nodes, results) {
   var children = nodes.childNodes;
   for(var i=0; i<children.length; i++) {
 
-    if(children[i].classList && hasClass(children[i])) {
+    if(children[i].classList && hasClass(className, children[i])) {
       results.push(children[i]);
     }
     getElementsByClassName(className, children[i], results);
